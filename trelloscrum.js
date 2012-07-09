@@ -16,7 +16,7 @@
 */
 
 //default story point picker sequence
-var _pointSeq = ['?', 0, 1, 2, 3, 5, 8, 13, 20];
+var _pointSeq = ['?', '.5', 1, 2, 4, 8, 16, 32, 64];
 
 //internals
 var filtered = false, //watch for filtered cards
