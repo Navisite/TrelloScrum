@@ -25,6 +25,10 @@ var filtered = false, //watch for filtered cards
 
 //what to do when DOM loads
 $(function(){
+	$(".js-filter-cards").click(function () {
+		setTimeout("insertStories()", 50);
+	});
+
 	//watch filtering
 	$('.js-filter-toggle').live('mouseup',function(e){
 		setTimeout(function(){
@@ -55,6 +59,54 @@ $(function(){
 	readList($('.list'));
 
 });
+
+jQuery.fn.reverse = [].reverse;
+
+function insertStories() {
+	//	console.log('insertStories');
+
+	//Make sure this is a sprint board	
+	if ($('.list-area h2:eq(0)').text().search('Stories') != -1) {
+		//Remove label Filters
+		$('.filter-label-toggle').each(function () {$(this).parent().remove()});
+
+		//Add stories to the list
+		$('.list:eq(0) .list-card-title').reverse().each(function () {
+			var story = $(this).text();
+			var story_match = story.match(/\[[0-9]*\]/);
+			if (story_match != null) {
+				var story_id = story_match[0].slice(1,-1);
+				insertStory(story, story_id);
+			}
+		});
+
+		//Attach click
+		$('.filter-by-story').click(function () {
+			filterCards($(this).attr('attr'));
+		});
+	}
+}
+
+function insertStory(txt, num) {
+	//	console.log('insertStory: ' + txt + '-' + num);
+
+	var html = '<li> <a href="#" class="js-filter-toggle filter-by-story clearfix" attr="['+num+']"> <span class="title">   <span>'+txt+'</span>  </span> <span class="app-icon small-icon light close-icon"></span> </a> </li>';
+	$('.card-filter li').eq(0).after(html);
+}
+
+function filterCards(val) {
+	//	console.log('filterCards: ' + val);
+
+	setTimeout("runInPage(\"$('.js-filter-by-title').val('"+val+"').keyup()\")", 5);
+	setTimeout("$('.filter-by-story').removeClass('active')", 10);
+}
+
+//Hack to allow us to trigger the keyup
+function runInPage(code) {
+	var script = document.createElement('script');
+	script.innerHTML = code;
+ 	document.documentElement.insertBefore(script);
+}
 
 //.list pseudo
 function List(el){
